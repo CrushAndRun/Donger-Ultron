@@ -64,7 +64,7 @@ class Donger(BaseClient):
 
     @pydle.coroutine
     def on_message(self, target, source, message):
-        if message.startswith("!"):
+        if message.startswith("="):
             command = message[1:].split(" ")[0].lower()
             args = message.rstrip().split(" ")[1:]
             
@@ -72,7 +72,7 @@ class Donger(BaseClient):
                 if (command == "fight" or command == "deathmatch" or command == "duel") and not self.gameRunning:
                     # Check for proper command usage
                     if not args:
-                        self.message(target, "Can you read? It is !{0} <nick> [othernick] ...".format(command))
+                        self.message(target, "Can you read? It is ={0} <nick> [othernick] ...".format(command))
                         return
                     
                     if not self.users[source]['account']:
@@ -94,7 +94,7 @@ class Donger(BaseClient):
                     self.fight([source] + args, True if command == "deathmatch" else False, True if (command == "deathmatch" or command == "duel") else False)
                 elif command == "accept" and not self.gameRunning:
                     if not args:
-                        self.message(target, "Can you read? It is !accept <nick>")
+                        self.message(target, "Can you read? It is =accept <nick>")
                         return
                     
                     if not self.users[source]['account']:
@@ -114,10 +114,10 @@ class Donger(BaseClient):
 
                                 opportunist = True
                             else:
-                                self.message(target, "Err... Maybe you meant to say \002!fight {0}\002? They never challenged you.".format(args[0]))
+                                self.message(target, "Err... Maybe you meant to say \002=fight {0}\002? They never challenged you.".format(args[0]))
                                 return
                     except KeyError: # self.pendingFights[x] doesn't exist
-                        self.message(target, "Err... Maybe you meant to say \002!fight {0}\002? They never challenged you.".format(args[0]))
+                        self.message(target, "Err... Maybe you meant to say \002=fight {0}\002? They never challenged you.".format(args[0]))
                         return
                     
                     # Check if the challenger is here
@@ -165,11 +165,11 @@ class Donger(BaseClient):
                     self.heal(source)
                 elif command == "ascii" and not self.gameRunning:
                     if not args:
-                        return self.message(self.channel, "Please use some text, like !ascii fuck you")
+                        return self.message(self.channel, "Please use some text, like =ascii fuck you")
                     if args and len(' '.join(args)) < 16:
                         self.message(target, self.ascii(' '.join(args)))
                     else:
-                        self.message(target, "Text must be 15 characters or less (that was {0} characters). Syntax: !ascii Fuck You".format(len(' '.join(args))))
+                        self.message(target, "Text must be 15 characters or less (that was {0} characters). Syntax: =ascii Fuck You".format(len(' '.join(args))))
                 elif command == "praise" and self.gameRunning:
                     if source != self.turnlist[self.currentTurn]:
                         self.message(self.channel, "It's not your fucking turn!")
@@ -215,11 +215,11 @@ class Donger(BaseClient):
                         del self.pendingFights[source.lower()]
                         self.message(target, "Fight cancelled.")
                     except KeyError:
-                        self.message(target, "You can only !cancel if you started a fight.")
+                        self.message(target, "You can only =cancel if you started a fight.")
                         return
                 elif command == "reject" and not self.gameRunning:
                     if not args:
-                        self.message(target, "Can you read? It's !reject <nick>")
+                        self.message(target, "Can you read? It's =reject <nick>")
                         return
                         
                     try: # I could just use a try.. except in the .remove(), but I am too lazy to remove this chunk of code
@@ -283,8 +283,8 @@ class Donger(BaseClient):
                         ranking = "{}th".format(ranking)
                     
                     self.message(target, "\002{0}\002's stats: \002{1}\002 wins, \002{2}\002 losses, \002{4}\002 coward quits, \002{5}\002 idle-outs (\002{3}\002), \002{11}\002 kills,"\
-                                 " \002{6}\002 !praises, \002{7}\002 fights started, accepted \002{8}\002 fights,"\
-                                 " !joined \002{9}\002 fights (\002{10}\002 total fights). Ranked \002{13}\002 (\002{12}\002 points)".format(stats.nick, stats.wins, 
+                                 " \002{6}\002 =praises, \002{7}\002 fights started, accepted \002{8}\002 fights,"\
+                                 " =joined \002{9}\002 fights (\002{10}\002 total fights). Ranked \002{13}\002 (\002{12}\002 points)".format(stats.nick, stats.wins, 
                                     stats.losses, balance, stats.quits, stats.idleouts, stats.praises, 
                                     stats.fights, stats.accepts, stats.joins, 
                                     (stats.fights + stats.accepts + stats.joins), stats.kills, score, ranking))
@@ -351,17 +351,17 @@ class Donger(BaseClient):
                 self.message(target, "PM'd you my commands.")
                 self.message(source, "  More commands available at http://bit.ly/1pG2Hay")
                 self.message(source, "Commands available only in {0}:".format(self.channel))
-                self.message(source, "  !fight <nickname> [othernicknames]: Challenge another player, or multiple players.")
-                self.message(source, "  !duel <nickname>: Same as fight, but only 1v1.")
-                self.message(source, "  !deathmatch <nickname>: Same as duel, but the loser is bant for 20 minutes.")
-                self.message(source, "  !ascii <text>: Turns any text 15 characters or less into ascii art")
-                self.message(source, "  !cancel: Cancels a !fight")
-                self.message(source, "  !reject <nick>: Rejects a !fight")
-                self.message(source, "  !stats [player]: Outputs player's game stats (or your own stats)")
-                self.message(source, "  !top, !shame: Lists the best, or the worst, players")
+                self.message(source, "  =fight <nickname> [othernicknames]: Challenge another player, or multiple players.")
+                self.message(source, "  =duel <nickname>: Same as fight, but only 1v1.")
+                self.message(source, "  =deathmatch <nickname>: Same as duel, but the loser is bant for 20 minutes.")
+                self.message(source, "  =ascii <text>: Turns any text 15 characters or less into ascii art")
+                self.message(source, "  =cancel: Cancels a =fight")
+                self.message(source, "  =reject <nick>: Rejects a =fight")
+                self.message(source, "  =stats [player]: Outputs player's game stats (or your own stats)")
+                self.message(source, "  =top, =shame: Lists the best, or the worst, players")
                 self.message(source, "Commands available everywhere:")
                 for ch in self.cmdhelp.keys(): #Extended commands help
-                    self.message(source, "  !{}: {}".format(ch, self.cmdhelp[ch]))
+                    self.message(source, "  ={}: {}".format(ch, self.cmdhelp[ch]))
             elif command == "version":
                 try:
                     ver = subprocess.check_output(["git", "describe", "--tags"]).decode().strip()
@@ -476,7 +476,7 @@ class Donger(BaseClient):
             return
         
         # The max amount of HP you can recover in a single turn depends on how many times you've
-        # healed since !hitting. The max number goes down, until you're forced to hit.
+        # healed since =hitting. The max number goes down, until you're forced to hit.
         healing = random.randint(22, 44 - (5-self.players[target.lower()]['heals'])*4)
         
         if critical: # If critical heal, override upper healing limit (re roll)
@@ -509,7 +509,7 @@ class Donger(BaseClient):
             return
         if critroll == 1:
             damage *= 2 
-            if not critical: # If it's not a forced critical hit (via !praise), then announce the critical
+            if not critical: # If it's not a forced critical hit (via =praise), then announce the critical
                 self.ascii("CRITICAL")
         else:
              if not self.players[target.lower()]['gdr'] == 1:
@@ -572,13 +572,13 @@ class Donger(BaseClient):
         self.message(self.channel, "1. Wait your turn. One person at a time.")
         self.message(self.channel, "2. Be a dick about it.")
         self.message(self.channel, " ")
-        self.message(self.channel, "Use !hit [nick] to strike.")
-        self.message(self.channel, "Use !heal to heal yourself.")
+        self.message(self.channel, "Use =hit [nick] to strike.")
+        self.message(self.channel, "Use =heal to heal yourself.")
         if not self.versusone: # Users can't join a fight if it's versusone (duel or deathmatch)
-            self.message(self.channel, "Use '/msg {0} !join' to join a game mid-fight.".format(config['nick']))
+            self.message(self.channel, "Use '/msg {0} =join' to join a game mid-fight.".format(config['nick']))
         if not self.deathmatch: # Users can't praise if it's a deathmatch
             if config['nick'] not in pendingFight['players'] or len(pendingFight['players']) > 2:
-                self.message(self.channel, "Use !praise [nick] to praise the donger gods (once per game).")
+                self.message(self.channel, "Use =praise [nick] to praise the donger gods (once per game).")
 
         self.message(self.channel, " ")
         if not (pendingFight['players'][1] == config['nick'] and len(pendingFight['players']) == 2):
@@ -639,12 +639,12 @@ class Donger(BaseClient):
             if i == config['nick'].lower():
                 continue
             if self.players[i]['hp'] > 0 and self.players[i]['hp'] < 25:
-                self.message(self.channel, "!hit {0}".format(self.players[i]['nick']))
+                self.message(self.channel, "=hit {0}".format(self.players[i]['nick']))
                 self.hit(config['nick'], self.players[i]['nick'])
                 return
         
         if myself['hp'] < 44 and myself['heals']:
-            self.message(self.channel, "!heal")
+            self.message(self.channel, "=heal")
             self.heal(config['nick'])
         else:
             players = self.turnlist[:]
@@ -654,7 +654,7 @@ class Donger(BaseClient):
                 hitting = self.players[random.choice(players).lower()]
                 if hitting['hp'] > 0:
                     victim = hitting
-            self.message(self.channel, "!hit {0}".format(victim['nick']))
+            self.message(self.channel, "=hit {0}".format(victim['nick']))
             self.hit(config['nick'], victim['nick'])
     
     def win(self, winner, realwin=True):
@@ -767,11 +767,11 @@ class Donger(BaseClient):
 
         if len(players) > 1:
             if deathmatch:
-                self.message(self.channel, "{0}: \002{1}\002 challenged you to a deathmatch. The loser will be bant for 20 minutes. To accept, use '!accept {1}'.".format(", ".join(players[1:]), players[0]))
+                self.message(self.channel, "{0}: \002{1}\002 challenged you to a deathmatch. The loser will be bant for 20 minutes. To accept, use '=accept {1}'.".format(", ".join(players[1:]), players[0]))
             else:
-                self.message(self.channel, "{0}: \002{1}\002 challenged you. To accept, use '!accept {1}'.".format(", ".join(players[1:]), players[0]))
+                self.message(self.channel, "{0}: \002{1}\002 challenged you. To accept, use '=accept {1}'.".format(", ".join(players[1:]), players[0]))
         else:
-            self.message(self.channel, "\002{0}\002 has challenged anybody willing to fight{1}. To accept, use '!accept {0}'.".format(players[0]," to the death. The loser will be bant for 20 minutes" if deathmatch else ""))
+            self.message(self.channel, "\002{0}\002 has challenged anybody willing to fight{1}. To accept, use '=accept {0}'.".format(players[0]," to the death. The loser will be bant for 20 minutes" if deathmatch else ""))
 
         if openSpots == 1 and len(players) > 1:
             self.message(self.channel, "This fight has an open spot for anybody to join.")
